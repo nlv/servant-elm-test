@@ -13,42 +13,15 @@ import Data
 import Data.Text
 import Api
 
-deriveBoth defaultOptions ''Test
+-- deriveElmDef defaultOptions ''Test
+-- deriveElmDef defaultOptions ''TestPair
 
-deriveBoth defaultOptions ''TestPair
+deriveElmDef defaultOptions ''TestG
+deriveElmDef defaultOptions ''TestPairG
 
+-- deriveBoth defaultOptions ''Test
+-- deriveBoth defaultOptions ''TestPair
 
-
--- instance ElmType PetitionId 
--- where
---     toElmType (PetitionId x) = ElmPrimitive EInt _
--- instance ElmType Petition
--- instance ElmType SignerForm
--- instance ElmType Test
-
-
--- elmopts = Options { fieldLabelModifier = replace "_" "" }
-
--- elmOpts :: ElmOptions
--- elmOpts = defElmOptions { urlPrefix = Dynamic }
-
--- spec :: Spec
--- spec = Spec ["Generated", "Api"]
---             (defElmImports
---             --  : toElmTypeSourceWith    elmopts (Proxy :: Proxy Petition)
---             --  : toElmDecoderSourceWith elmopts (Proxy :: Proxy Petition)
---             --  : toElmTypeSourceWith    elmopts (Proxy :: Proxy SignerForm)
---             --  : toElmDecoderSourceWith elmopts (Proxy :: Proxy SignerForm)
---             --  : toElmEncoderSourceWith elmopts (Proxy :: Proxy SignerForm)
---               : toElmTypeSourceWith    elmopts (Proxy :: Proxy Test)
---              : toElmDecoderSourceWith elmopts (Proxy :: Proxy Test)
---              : generateElmForAPIWith elmOpts  (Proxy :: Proxy TestApi))
---             --  : generateElmForAPIWith elmOpts  (Proxy :: Proxy RestApi))
-
-
-
--- main :: IO ()
--- main = specsToDir [spec] "../client/src"
 
 main :: IO ()
 main =
@@ -62,4 +35,7 @@ main =
     [ DefineElm (Proxy :: Proxy Test)
     , DefineElm (Proxy :: Proxy TestPair)
     ]
+    -- [ DefineElm (Proxy :: Proxy (TestG Int String))
+    -- , DefineElm (Proxy :: Proxy (TestPairG Int String))
+    -- ]
     (Proxy :: Proxy TestApi)

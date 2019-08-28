@@ -8,13 +8,22 @@
 
 
 module Data (
-  Test(..),
-  TestPair(..)
+  TestG(..),
+  Test,
+  TestPairG(..),
+  TestPair
   )  where
 
 import GHC.Generics
 import Data.Text
+-- import Data.Aeson
 
-data Test = Test { testId :: Int, testName :: Text} deriving Generic
+data TestG a b = Test { testId :: a, testName :: b} deriving Generic
+type Test = TestG Int String
+-- instance ToJSON   Test
+-- instance FromJSON Test
 
-data TestPair = TestPair { tpTest :: Test, tpInt :: Int } deriving Generic
+data TestPairG a b = TestPair { tpTest :: TestG a b, tpInt :: Int } deriving Generic
+type TestPair = TestPairG Int String 
+-- instance ToJSON   TestPair
+-- instance FromJSON TestPair

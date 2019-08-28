@@ -17,46 +17,46 @@ maybeBoolToIntStr mx =
     Just True -> "1"
     Just False -> "0"
 
-type alias Test  =
-   { testId: Int
-   , testName: String
+type alias TestG a b =
+   { testId: a
+   , testName: b
    }
 
-jsonDecTest : Json.Decode.Decoder ( Test )
-jsonDecTest =
+jsonDecTestG : Json.Decode.Decoder a -> Json.Decode.Decoder b -> Json.Decode.Decoder ( TestG a b )
+jsonDecTestG localDecoder_a localDecoder_b =
    Json.Decode.succeed (\ptestId ptestName -> {testId = ptestId, testName = ptestName})
-   |> required "testId" (Json.Decode.int)
-   |> required "testName" (Json.Decode.string)
+   |> required "testId" (localDecoder_a)
+   |> required "testName" (localDecoder_b)
 
-jsonEncTest : Test -> Value
-jsonEncTest  val =
+jsonEncTestG : (a -> Value) -> (b -> Value) -> TestG a b -> Value
+jsonEncTestG localEncoder_a localEncoder_b val =
    Json.Encode.object
-   [ ("testId", Json.Encode.int val.testId)
-   , ("testName", Json.Encode.string val.testName)
+   [ ("testId", localEncoder_a val.testId)
+   , ("testName", localEncoder_b val.testName)
    ]
 
 
 
-type alias TestPair  =
-   { tpTest: Test
+type alias TestPairG a b =
+   { tpTest: (TestG a b)
    , tpInt: Int
    }
 
-jsonDecTestPair : Json.Decode.Decoder ( TestPair )
-jsonDecTestPair =
+jsonDecTestPairG : Json.Decode.Decoder a -> Json.Decode.Decoder b -> Json.Decode.Decoder ( TestPairG a b )
+jsonDecTestPairG localDecoder_a localDecoder_b =
    Json.Decode.succeed (\ptpTest ptpInt -> {tpTest = ptpTest, tpInt = ptpInt})
-   |> required "tpTest" (jsonDecTest)
+   |> required "tpTest" (jsonDecTestG (localDecoder_a) (localDecoder_b))
    |> required "tpInt" (Json.Decode.int)
 
-jsonEncTestPair : TestPair -> Value
-jsonEncTestPair  val =
+jsonEncTestPairG : (a -> Value) -> (b -> Value) -> TestPairG a b -> Value
+jsonEncTestPairG localEncoder_a localEncoder_b val =
    Json.Encode.object
-   [ ("tpTest", jsonEncTest val.tpTest)
+   [ ("tpTest", (jsonEncTestG (localEncoder_a) (localEncoder_b)) val.tpTest)
    , ("tpInt", Json.Encode.int val.tpInt)
    ]
 
 
-getTestByCode : String -> (Maybe String) -> (Result Http.Error  (TestPair)  -> msg) -> Cmd msg
+getTestByCode : String -> (Maybe String) -> (Result Http.Error  ((TestPairG Int String))  -> msg) -> Cmd msg
 getTestByCode capture_code query_locale toMsg =
     let
         params =
@@ -80,7 +80,7 @@ getTestByCode capture_code query_locale toMsg =
             , body =
                 Http.emptyBody
             , expect =
-                Http.expectJson toMsg jsonDecTestPair
+                Http.expectJson toMsg jsonDec(TestPairG Int String)
             , timeout =
                 Nothing
             , tracker =
