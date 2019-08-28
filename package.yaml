@@ -1,0 +1,24 @@
+name: servant-elm-test
+
+ghc-options: -Wall
+
+library:
+  source-dirs:
+    - src
+
+executables:
+  generate-elm-client:
+    main: exe/generate-elm-client/Main.hs
+    dependencies:
+      - servant-elm-test
+      - servant-elm >= 0.6.0.2
+      - elm-bridge
+
+dependencies:
+  - base
+  - text
+  - bytestring
+  - servant
+  - microlens
+  - aeson
+  - servant-server

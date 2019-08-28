@@ -1,0 +1,48 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: f413cf5a479b581d1af8295160d1a172783c7db8dcb9b9caf935750aad464649
+
+name:           servant-elm-test
+version:        0.0.0
+build-type:     Simple
+
+library
+  exposed-modules:
+      Api
+      Data
+  other-modules:
+      Paths_servant_elm_test
+  hs-source-dirs:
+      src
+  ghc-options: -Wall
+  build-depends:
+      aeson
+    , base
+    , bytestring
+    , microlens
+    , servant
+    , servant-server
+    , text
+  default-language: Haskell2010
+
+executable generate-elm-client
+  main-is: exe/generate-elm-client/Main.hs
+  other-modules:
+      Paths_servant_elm_test
+  ghc-options: -Wall
+  build-depends:
+      aeson
+    , base
+    , bytestring
+    , elm-bridge
+    , microlens
+    , servant
+    , servant-elm >=0.6.0.2
+    , servant-elm-test
+    , servant-server
+    , text
+  default-language: Haskell2010
